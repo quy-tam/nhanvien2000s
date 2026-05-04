@@ -5,75 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MilkTea 2000s | Trạm Pha Chế</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        body { font-family: 'Be Vietnam Pro', sans-serif; background: #f0f2f5; color: #333; }
-        .navbar { background: #7fb069; } /* Tông xanh nguyên bản của sếp */
-        .order-card { background: white; border: none; border-radius: 12px; transition: 0.3s; border-left: 5px solid #ffc107; }
-        .order-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
-        .badge-price { font-size: 1.1rem; }
-        #login-view { height: 100vh; display: flex; justify-content: center; align-items: center; }
+        /* --- BỘ MÀU ĐỒNG BỘ TRANG KHÁCH HÀNG --- */
+        :root { 
+            --primary: #D4A373; 
+            --primary-hover: #b58555;
+            --dark-text: #4A3B32; 
+            --bg-light: #FAEDCD;
+            --bg-body: #FEFAE0;
+            --white-glass: rgba(255, 255, 255, 0.9);
+        }
+        
+        body { font-family: 'Outfit', sans-serif; background: var(--bg-body); color: var(--dark-text); }
+        
+        /* Navbar Kính mờ (Floating) */
+        .custom-navbar {
+            background: var(--white-glass);
+            backdrop-filter: blur(10px);
+            margin: 15px auto 30px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            max-width: 98%;
+            padding: 10px 25px;
+        }
+
+        .navbar-brand { font-weight: 800; font-size: 1.3rem; color: var(--dark-text) !important; }
+        .navbar-brand span { color: var(--primary); }
+
+        /* Login Screen */
+        #login-view { height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(to right, rgba(74, 59, 50, 0.8), rgba(212, 163, 115, 0.6)), url('https://statics.vinwonders.com/Vietnamese-Milk-Tea-2_1701613025.jpg'); background-size: cover; background-position: center; }
+        .login-card { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+
+        /* Nút bấm Custom */
+        .btn-custom { background-color: var(--primary); color: white; border: none; border-radius: 50px; font-weight: 600; transition: 0.3s; }
+        .btn-custom:hover { background-color: var(--primary-hover); transform: translateY(-2px); color: white; }
+        .btn-outline-custom { border: 2px solid var(--primary); color: var(--primary); border-radius: 50px; font-weight: 600; transition: 0.3s; background: transparent; }
+        .btn-outline-custom:hover { background-color: var(--primary); color: white; }
+
+        /* Card Đơn Hàng */
+        .order-card { background: white; border: none; border-radius: 20px; transition: 0.3s; border-left: 6px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+        .order-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(212, 163, 115, 0.15) !important; }
+        
+        .badge-primary { background-color: var(--primary); color: white; padding: 5px 12px; border-radius: 10px; font-weight: bold; }
+        .note-box { background-color: var(--bg-light); border-left: 4px solid #e63946; padding: 10px; border-radius: 10px; }
+
+        /* Tab Navigation */
+        .nav-tabs { border-bottom: 2px solid var(--bg-light); margin-bottom: 20px; }
+        .nav-tabs .nav-link { color: #888; font-weight: 700; border: none; padding: 12px 25px; border-radius: 20px 20px 0 0; transition: 0.3s; }
+        .nav-tabs .nav-link:hover { color: var(--primary); }
+        .nav-tabs .nav-link.active { color: var(--primary); background: var(--bg-light); border: none; }
+
+        /* Hiệu ứng chớp nháy (Live) */
         .blink { animation: blinker 1.5s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
-        .nav-tabs .nav-link { color: #555; font-weight: bold; border-radius: 8px 8px 0 0; }
-        .nav-tabs .nav-link.active { color: #7fb069; border-bottom: 3px solid #7fb069; }
-        /* Ẩn các nút khi in */
+
+        /* Nút Toggle Switch (Kho) */
+        .form-check-input:checked { background-color: var(--primary); border-color: var(--primary); }
+
         @media print { .no-print { display: none !important; } }
     </style>
 </head>
 <body>
 
-    <div id="login-view" class="container">
-        <div class="card p-4 shadow-lg border-0 rounded-4 text-center" style="width: 100%; max-width: 400px;">
-            <h3 class="fw-bold mb-3"><i class="fas fa-clipboard-list text-success"></i> Trạm Pha Chế 2000s </h3>
-            <input type="password" id="staffPass" class="form-control mb-3 text-center" placeholder="Nhập Mã PIN" onkeypress="handleEnter(event)">
-            <button class="btn btn-success w-100 fw-bold" onclick="login()">Truy Cập Hệ Thống</button>
+    <!-- MÀN HÌNH ĐĂNG NHẬP -->
+    <div id="login-view">
+        <div class="card p-5 border-0 login-card text-center" style="width: 100%; max-width: 420px;">
+            <div class="mb-4">
+                <i class="fas fa-mug-hot fa-3x" style="color: var(--primary);"></i>
+            </div>
+            <h3 class="fw-bold mb-1" style="color: var(--dark-text);">TRẠM PHA CHẾ</h3>
+            
+            <input type="password" id="staffPass" class="form-control form-control-lg mb-4 text-center rounded-pill bg-light border-0 shadow-sm" placeholder="Nhập Mã PIN" onkeypress="handleEnter(event)" style="font-weight: bold; letter-spacing: 3px;">
+            <button class="btn btn-custom w-100 py-3 fs-5" onclick="login()">Truy Cập Hệ Thống</button>
         </div>
     </div>
 
+    <!-- MÀN HÌNH QUẢN LÝ (DASHBOARD) -->
     <div id="dashboard-view" style="display: none;">
-        <nav class="navbar shadow-sm mb-4 py-3">
-            <div class="container-fluid px-4">
-                <span class="navbar-brand mb-0 h1 text-white fw-bold"><i class="fas fa-mug-hot"></i> MilkTea 2000s | Trạm Pha Chế</span>
-                <div>
-                    <span class="text-white me-3 d-none d-md-inline"><i class="fas fa-circle text-danger blink"></i> Real-time System</span>
-                    <button class="btn btn-danger btn-sm fw-bold shadow-sm" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
+        
+        <nav class="navbar custom-navbar sticky-top">
+            <div class="container-fluid px-2">
+                <span class="navbar-brand mb-0"><i class="fas fa-mug-hot me-2"></i>MilkTea<span>2000s</span> | Trạm Pha Chế</span>
+                <div class="d-flex align-items-center">
+                    <span class="me-4 fw-bold small d-none d-md-inline" style="color: var(--primary);">
+                        <i class="fas fa-circle text-danger blink me-1"></i> Tự động đồng bộ
+                    </span>
+                    <button class="btn btn-outline-danger btn-sm rounded-pill fw-bold px-3" onclick="logout()"><i class="fas fa-power-off me-1"></i> Thoát</button>
                 </div>
             </div>
         </nav>
 
-        <div class="container-fluid px-4">
-            <ul class="nav nav-tabs mb-4 border-bottom-0">
+        <div class="container-fluid px-md-4">
+            <ul class="nav nav-tabs border-bottom-0">
                 <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#tab-orders"><i class="fas fa-list"></i> Nhận Đơn</a>
+                    <a class="nav-link active" data-bs-toggle="tab" href="#tab-orders"><i class="fas fa-clipboard-list me-2"></i> Nhận Đơn</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tab-stock"><i class="fas fa-box"></i> Quản Lý Món (Bật/Tắt Món)</a>
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab-stock"><i class="fas fa-boxes me-2"></i> Quản Lý Kho Món</a>
                 </li>
             </ul>
 
             <div class="tab-content">
+                <!-- TAB 1: NHẬN ĐƠN -->
                 <div class="tab-pane fade show active" id="tab-orders">
-                    <div class="row mb-3">
+                    <div class="row mb-4 align-items-center">
                         <div class="col-12">
-                            <h4 class="fw-bold text-dark mb-0">Hàng Đợi (<span id="order-count" class="text-danger">0</span>)</h4>
-                            <p class="text-muted">Đơn mới nhất sẽ xuất hiện ở trên cùng.</p>
+                            <h4 class="fw-bold mb-1" style="color: var(--dark-text);">
+                                Hàng Đợi Chờ Pha Chế 
+                                <span id="order-count" class="badge rounded-pill bg-danger ms-2 shadow-sm">0</span>
+                            </h4>
+                            <p class="text-muted small mb-0">Các đơn mới nhất được đẩy lên đầu trang.</p>
                         </div>
                     </div>
-                    <div class="row g-3" id="order-board"></div>
+                    <!-- Khu vực chứa các thẻ đơn hàng -->
+                    <div class="row g-4" id="order-board"></div>
                 </div>
 
+                <!-- TAB 2: QUẢN LÝ KHO (Tắt/Mở món) -->
                 <div class="tab-pane fade" id="tab-stock">
-                    <div class="card shadow-sm border-0 rounded-4 mb-5" style="max-width: 600px;">
-                        <div class="card-header bg-white py-3 border-bottom-0">
-                            <h5 class="fw-bold mb-0"><i class="fas fa-sliders-h text-primary"></i> Trạng Thái Nguyên Liệu</h5>
-                            <small class="text-muted">Tắt công tắc nếu món hết nguyên liệu. Trang web sẽ tự động ẩn món đó đi.</small>
+                    <div class="card shadow-sm border-0 mb-5" style="max-width: 650px; border-radius: 25px;">
+                        <div class="card-header bg-white py-4 px-4 border-bottom-0" style="border-radius: 25px 25px 0 0;">
+                            <h5 class="fw-bold mb-1" style="color: var(--primary);"><i class="fas fa-sliders-h me-2"></i> Trạng Thái Nguyên Liệu</h5>
+                            <small class="text-muted">Tắt công tắc nếu món hết nguyên liệu. Menu khách hàng sẽ tự động báo "Tạm hết".</small>
                         </div>
                         <div class="card-body p-0">
-                            <table class="table align-middle mb-0 table-hover">
-                                <thead class="table-light"><tr><th class="ps-4">Tên Món Nước</th><th class="text-end pe-4">Tình Trạng (Còn/Hết)</th></tr></thead>
+                            <table class="table align-middle mb-0 table-hover table-borderless">
+                                <thead style="background: var(--bg-light);">
+                                    <tr>
+                                        <th class="ps-4 py-3 text-dark fw-bold rounded-start">Tên Thức Uống</th>
+                                        <th class="text-end pe-4 py-3 text-dark fw-bold rounded-end">Sẵn Sàng</th>
+                                    </tr>
+                                </thead>
                                 <tbody id="stock-list"></tbody>
                             </table>
                         </div>
@@ -83,37 +148,48 @@
         </div>
     </div>
 
-    <div class="modal fade" id="staffBillModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content border-0 shadow-lg" style="background: #fffcf8; font-family: 'Courier New', Courier, monospace;">
+    <!-- MODAL BILL (ĐÃ ĐƯỢC ĐỒNG BỘ Y HỆT TRANG KHÁCH HÀNG) -->
+    <div class="modal fade" id="staffBillModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+            <div class="modal-content border-0 shadow-lg" style="background: #FFFDF9; border-radius: 20px;">
                 <div class="modal-body p-4 text-center" id="billContent">
-                    <h4 class="fw-bold mb-0 text-dark">MilkTea 2000s</h4>
-                    <p class="small text-muted mb-3">HÓA ĐƠN ĐIỀU PHỐI</p>
-                    <h5 class="fw-bold border-bottom border-dark pb-2 mb-3" style="border-bottom-style: dashed !important;">BILL TẠM TÍNH</h5>
+                    <h3 class="fw-bold mb-4" style="color: var(--dark-text);">MILKTEA 2000S</h3>
                     
-                    <div class="border border-2 border-dark p-2 mb-3 bg-light">
-                        <small class="fw-bold">MÃ ĐƠN HÀNG:</small>
-                        <h3 class="fw-bold mb-0 text-danger" id="sBillCode">----</h3>
+                    <!-- Khung viền nét đứt -->
+                    <div style="border: 2px dashed var(--primary); border-radius: 12px; padding: 10px; margin-bottom: 25px;">
+                        <span style="color: var(--primary); font-weight: bold; font-size: 1.1rem; letter-spacing: 1px;">PHIẾU ĐIỀU PHỐI</span>
                     </div>
-
-                    <div class="text-start small mb-3 border-bottom pb-2" style="border-style: dashed !important;">
-                        <div><strong>Khách:</strong> <span id="sBillName"></span></div>
-                        <div><strong>Giờ:</strong> <span id="sBillTime"></span></div>
+                    
+                    <!-- Thông tin khách in đậm toàn bộ -->
+                    <div class="text-start mb-3 fw-bold" style="color: var(--dark-text); font-size: 1.05rem; line-height: 2;">
+                        <div>Mã đơn: <span id="sBillCode" style="color: var(--primary); font-size: 1.1rem;"></span></div>
+                        <div>Khách: <span id="sBillName"></span></div>
+                        <div>SĐT: <span id="sBillPhone"></span></div>
+                        <div>Ngày/Giờ: <span id="sBillTime"></span></div>
                     </div>
+                    
+                    <hr style="border-top: 2px dashed #ccc; opacity: 1; margin: 15px 0;">
+                    
+                    <!-- Danh sách món có Layout mô phỏng hình ảnh -->
+                    <div id="sBillItems" class="text-start mb-3"></div>
 
-                    <div class="border-bottom border-dark pb-2 mb-2 text-start small" style="border-bottom-style: dashed !important;" id="sBillItems"></div>
-
-                    <div class="d-flex justify-content-between fw-bold fs-5 mb-3 text-dark">
-                        <span>TỔNG:</span><span id="sBillTotal">0 đ</span>
+                    <!-- GHI CHÚ BỔ SUNG LÊN BILL -->
+                    <div id="sNoteContainer" class="text-start p-3 mb-3 rounded" style="background: var(--bg-light); border-left: 4px solid var(--primary); font-size: 0.95rem; display: none;">
+                        <strong style="color: var(--dark-text);">Ghi chú:</strong> <span id="sBillNote" style="color: var(--dark-text);"></span>
                     </div>
-
-                    <div class="text-start small mb-3 p-2 rounded" style="background: #f1f2f6; font-family: 'Be Vietnam Pro', sans-serif;">
-                        <strong>Ghi chú:</strong> <span id="sBillNote" class="fst-italic"></span>
+                    
+                    <!-- Tổng tiền -->
+                    <div class="d-flex justify-content-between align-items-center fw-bold fs-5 mt-4 mb-4" style="color: var(--dark-text);">
+                        <span>TỔNG:</span><span id="sBillTotal" style="color: var(--primary); font-size: 1.8rem;">0 đ</span>
                     </div>
-
-                    <div class="d-flex gap-2 no-print">
-                        <button type="button" class="btn btn-secondary btn-sm w-50 fw-bold" data-bs-dismiss="modal">Đóng</button>
-                        <button type="button" class="btn btn-success btn-sm w-50 fw-bold" onclick="printStaffBill()"><i class="fas fa-print"></i> In Bill</button>
+                    
+                    <!-- Lời chào nội bộ -->
+                    <p class="fst-italic text-muted mb-4 fw-bold" style="font-size: 0.95rem;">*Phiếu dành cho Trạm pha chế</p>
+                    
+                    <!-- Nút bấm (sẽ bị ẩn khi in) -->
+                    <div class="d-flex gap-2 no-print mt-2">
+                        <button type="button" class="btn btn-light w-50 fw-bold rounded-pill border" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-custom w-50 fw-bold rounded-pill" onclick="printStaffBill()"><i class="fas fa-print me-1"></i> In Bill</button>
                     </div>
                 </div>
             </div>
@@ -142,6 +218,7 @@
             const passInput = document.getElementById('staffPass');
             const enteredPass = passInput.value;
 
+            // Truy xuất mã PIN từ Database Admin
             dbAdmin.ref('scurity/staffpass').once('value').then((snapshot) => {
                 const correctPass = String(snapshot.val());
                 if(enteredPass === correctPass) {
@@ -150,14 +227,14 @@
                     document.getElementById('dashboard-view').style.display = 'block';
                     tingTingSound.play().catch(()=>{}); 
                 } else { 
-                    alert("Sai mã PIN !"); 
+                    alert("Sai mã PIN bảo mật!"); 
                 }
             });
         }
 
         function logout() { location.reload(); }
 
-        // 2. TÍNH NĂNG IN BILL NHIỆT
+        // 2. TÍNH NĂNG IN BILL NHIỆT (Giữ nguyên định dạng CSS)
         function printStaffBill() {
             const content = document.getElementById('billContent').innerHTML;
             const win = window.open('', '', 'width=400,height=600');
@@ -165,12 +242,20 @@
                 <html>
                 <head>
                     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
                     <style>
-                        body { font-family: 'Courier New', monospace; padding: 20px; background: #fffcf8; }
+                        /* Bắt buộc phải khai báo lại màu cho khung in */
+                        :root { 
+                            --primary: #D4A373; 
+                            --dark-text: #4A3B32; 
+                            --bg-light: #FAEDCD;
+                        }
+                        body { font-family: 'Outfit', sans-serif; padding: 20px; background: #FFFDF9; color: var(--dark-text); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
                         .no-print { display: none !important; }
                     </style>
                 </head>
-                <body onload="window.print(); window.close();">
+                <body onload="setTimeout(() => { window.print(); window.close(); }, 500);">
                     <div class="text-center">${content}</div>
                 </body>
                 </html>
@@ -191,41 +276,58 @@
 
             let html = "";
             if (pendingOrders.length === 0) {
-                html = `<div class="col-12 text-center text-muted mt-5"><i class="fas fa-check-circle fa-4x mb-3 text-success"></i><h5>Chưa Có Đơn!</h5></div>`;
+                html = `
+                <div class="col-12 text-center mt-5 opacity-50">
+                    <i class="fas fa-clipboard-check fa-4x mb-3" style="color: var(--primary);"></i>
+                    <h5 class="fw-bold text-dark">Chưa Có Đơn Hàng Mới!</h5>
+                    <p>Nhân viên có thể nghỉ ngơi phút chốc.</p>
+                </div>`;
             } else {
                 pendingOrders.forEach(o => {
                     const total = o.total ? parseInt(o.total).toLocaleString() : '0';
                     const time = o.time ? (o.time.includes(' ') ? o.time.split(' ')[1] : o.time) : '';
-                    let itemsDisplay = o.items ? o.items.split(' + ').join('<br>☕ ') : "";
+                    
+                    // Format lại dòng hiển thị món ăn cho đẹp
+                    let itemsDisplay = o.items ? o.items.split(' + ').map(i => `<div class="mb-1"><i class="fas fa-coffee text-muted me-1" style="font-size:0.8rem;"></i> ${i}</div>`).join('') : "";
+                    
+                    // Xử lý ghi chú
+                    let noteHTML = "";
+                    if(o.note && o.note !== "Không có") {
+                        noteHTML = `
+                        <div class="note-box mb-3">
+                            <div class="small fw-bold text-danger mb-1"><i class="fas fa-exclamation-circle me-1"></i> GHI CHÚ:</div>
+                            <div class="small fw-bold text-dark">${o.note}</div>
+                        </div>`;
+                    }
                     
                     html += `
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="card order-card shadow-sm h-100 p-3">
-                            <div class="d-flex justify-content-between align-items-start border-bottom pb-2 mb-3">
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="card order-card h-100 p-4">
+                            <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
                                 <div>
-                                    <h5 class="fw-bold text-primary mb-1">
-                                        <span class="badge bg-danger me-1">${o.orderCode || '---'}</span>
-                                        <i class="fas fa-user ms-1"></i> ${o.customerName}
+                                    <h5 class="fw-bold mb-2 text-dark">
+                                        <span class="badge badge-primary me-2 shadow-sm">#${o.orderCode || '----'}</span>
                                     </h5>
-                                    <div class="text-muted small"><i class="fas fa-phone-alt"></i> ${o.customerPhone}</div>
+                                    <div class="fw-bold text-dark mb-1"><i class="fas fa-user-circle text-muted me-1"></i> ${o.customerName}</div>
+                                    <div class="text-muted small fw-bold"><i class="fas fa-phone-alt me-1"></i> ${o.customerPhone}</div>
                                 </div>
                                 <div class="text-end">
-                                    <span class="badge bg-success badge-price mb-1">${total}đ</span><br>
-                                    <small class="text-muted"><i class="fas fa-clock"></i> ${time}</small>
+                                    <span class="d-block fw-bold fs-5 mb-1" style="color: var(--primary);">${total}đ</span>
+                                    <small class="text-muted fw-bold"><i class="far fa-clock me-1"></i> ${time}</small>
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <h6 class="fw-bold text-dark small"><i class="fas fa-clipboard-list text-warning"></i> Chi tiết:</h6>
-                                <p class="mb-0 small" style="white-space: pre-wrap;">☕ ${itemsDisplay}</p>
+                            
+                            <div class="mb-3 flex-grow-1">
+                                <h6 class="fw-bold text-dark small mb-2 text-uppercase"><i class="fas fa-receipt text-muted me-1"></i> Yêu Cầu Pha Chế:</h6>
+                                <div class="small fw-bold" style="color: var(--dark-text); line-height: 1.6;">${itemsDisplay}</div>
                             </div>
-                            <div class="p-2 rounded mb-4" style="background-color: #fff4e5; border-left: 4px solid #ff9800;">
-                                <div class="small fw-bold text-danger">GHI CHÚ:</div>
-                                <div class="small fst-italic text-dark mt-1">${o.note || "Không có"}</div>
-                            </div>
-                            <div class="mt-auto pt-3 border-top d-flex gap-2">
-                                <button class="btn btn-outline-secondary btn-sm fw-bold px-3" onclick="viewBill('${o.id}')"><i class="fas fa-file-invoice"></i></button>
-                                <button class="btn btn-outline-danger btn-sm fw-bold flex-grow-1" onclick="cancelOrder('${o.id}')">Hủy</button>
-                                <button class="btn btn-success btn-sm fw-bold flex-grow-1" onclick="completeOrder('${o.id}')"><i class="fas fa-check"></i> Xong</button>
+                            
+                            ${noteHTML}
+                            
+                            <div class="mt-auto pt-3 d-flex gap-2">
+                                <button class="btn btn-light border btn-sm fw-bold px-3 rounded-pill" onclick="viewBill('${o.id}')" title="Xem Bill"><i class="fas fa-print"></i></button>
+                                <button class="btn btn-outline-danger btn-sm fw-bold flex-grow-1 rounded-pill" onclick="cancelOrder('${o.id}')">Hủy Đơn</button>
+                                <button class="btn btn-custom btn-sm fw-bold flex-grow-1" onclick="completeOrder('${o.id}')"><i class="fas fa-check me-1"></i> Đã Xong</button>
                             </div>
                         </div>
                     </div>`;
@@ -234,38 +336,64 @@
             document.getElementById('order-board').innerHTML = html;
         });
 
-        function completeOrder(id) { if(confirm("Xác nhận đã pha chế xong?")) dbClient.ref('orders').child(id).update({ status: 'done' }); }
-        function cancelOrder(id) { if(confirm("CẢNH BÁO: Hủy đơn hàng này?")) dbClient.ref('orders').child(id).update({ status: 'cancelled' }); }
+        function completeOrder(id) { if(confirm("Xác nhận đã pha chế xong đơn này?")) dbClient.ref('orders').child(id).update({ status: 'done' }); }
+        function cancelOrder(id) { if(confirm("CẢNH BÁO: Bạn có chắc chắn muốn Hủy đơn hàng này?")) dbClient.ref('orders').child(id).update({ status: 'cancelled' }); }
 
         function viewBill(id) {
             const o = allCurrentOrders.find(x => x.id === id); if(!o) return;
-            // ĐẨY MÃ ĐƠN HÀNG VÀO BILL
-            document.getElementById('sBillCode').innerText = o.orderCode || "---";
+            
+            // ĐẨY THÔNG TIN VÀO BILL MỚI (Khớp form trang khách)
+            document.getElementById('sBillCode').innerText = o.orderCode ? "#" + o.orderCode : "---";
             document.getElementById('sBillName').innerText = o.customerName;
-            document.getElementById('sBillTime').innerText = o.time.split(' ')[1] || o.time;
+            document.getElementById('sBillPhone').innerText = o.customerPhone || "---";
+            document.getElementById('sBillTime').innerText = o.time || o.time;
             document.getElementById('sBillTotal').innerText = (parseInt(o.total) || 0).toLocaleString() + " đ";
-            document.getElementById('sBillNote').innerText = o.note;
-            document.getElementById('sBillItems').innerHTML = o.items.split(" + ").map(i => `<div class="mb-1">☕ ${i}</div>`).join("");
+            
+            // Render Ghi chú trên Bill In
+            if(o.note && o.note !== "Không có") {
+                document.getElementById('sNoteContainer').style.display = 'block';
+                document.getElementById('sBillNote').innerText = o.note;
+            } else {
+                document.getElementById('sNoteContainer').style.display = 'none';
+            }
+
+            // Render Danh sách món giống form bill khách hàng (Dùng ô vuông icon thay thế ảnh thật)
+            document.getElementById('sBillItems').innerHTML = o.items.split(" + ").map(i => {
+                let parts = i.split("x ");
+                let qty = parts[0] ? parts[0] : "1";
+                let name = parts[1] || i;
+                return `
+                <div class="d-flex align-items-center py-2" style="border-bottom: 2px dashed #eee;">
+                    <div style="width: 50px; height: 50px; background: var(--bg-light); border-radius: 8px; margin-right: 15px; display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                        <i class="fas fa-coffee fs-4"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-bold text-dark" style="font-size: 0.95rem;">${name}</div>
+                        <div class="text-muted small fw-bold">x${qty}</div>
+                    </div>
+                </div>`;
+            }).join("");
+
             new bootstrap.Modal(document.getElementById('staffBillModal')).show();
         }
 
-        // 4. LOGIC KHO (GIỮ NGUYÊN)
+        // 4. LOGIC KHO (Tắt/Mở món ăn)
         dbAdmin.ref('drinks').on('value', snap => {
             const data = snap.val();
             const drinks = data ? Object.keys(data).map(k => ({id:k, ...data[k]})) : [];
             document.getElementById('stock-list').innerHTML = drinks.map(d => {
                 const isOut = d.status === 'out';
                 return `
-                <tr>
-                    <td class="ps-4">
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td class="ps-4 py-3">
                         <div class="d-flex align-items-center">
-                            <img src="${d.img}" width="40" height="40" class="rounded me-3" style="object-fit:cover; ${isOut ? 'filter: grayscale(1); opacity:0.5;' : ''}">
-                            <b class="${isOut ? 'text-decoration-line-through text-muted' : ''}">${d.name}</b>
+                            <img src="${d.img}" width="50" height="50" class="rounded-3 me-3" style="object-fit:cover; box-shadow: 0 2px 5px rgba(0,0,0,0.1); ${isOut ? 'filter: grayscale(1); opacity:0.5;' : ''}">
+                            <div class="fw-bold ${isOut ? 'text-decoration-line-through text-muted' : 'text-dark'}">${d.name}</div>
                         </div>
                     </td>
-                    <td class="text-end pe-4">
-                        <div class="form-check form-switch d-inline-block">
-                            <input class="form-check-input" type="checkbox" style="cursor:pointer; transform: scale(1.2);" 
+                    <td class="text-end pe-4 align-middle">
+                        <div class="form-check form-switch d-inline-block m-0">
+                            <input class="form-check-input" type="checkbox" style="cursor:pointer; transform: scale(1.4);" 
                             ${!isOut ? 'checked' : ''} onchange="toggleStock('${d.id}', this.checked)">
                         </div>
                     </td>
